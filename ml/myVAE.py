@@ -28,7 +28,6 @@ class VAE(nn.Module):
             nn.Linear(in_dim//4, in_dim//2),
             nn.ReLU(),
             nn.Linear(in_dim//2, in_dim),
-            nn.Sigmoid()
         )
 
 
@@ -58,7 +57,7 @@ class VAE(nn.Module):
     
     def loss(self, x_hat, mu, log_var, x):
         x = x.view(-1, self.in_dim)
-        rec = F.binary_cross_entropy(x_hat, x, reduction = 'none')     # in reality it returns the (-1)*cross entropy
+        rec = F.mse_loss(x_hat, x, reduction = 'none')                  # in reality it returns the (-1)*cross entropy
         rec = torch.sum(rec, dim = -1)
 
         KL = -0.5 * (1 + log_var - mu.pow(2) - log_var.exp())           # KL between two Normal has a close form
