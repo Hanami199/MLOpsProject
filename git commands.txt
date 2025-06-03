@@ -1,8 +1,11 @@
-# first file
-# second line
+# git checkout dev-ml                          # sposta sul branch
+# git fetch origin                             # connette al branch principale
+# git rebase main                              # connette con il main
+
 # git add .
 # git commit -m "changes" 
-# git push -u origin dev-data
-print("Hello")
-print("2")
-print("123")
+# git push                                     # update sul branch
+# git push -u origin dev-data                  # richiesta merge con il main
+
+
+
