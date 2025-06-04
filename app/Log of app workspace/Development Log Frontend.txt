@@ -1,0 +1,78 @@
+Development Log – Frontend Setup & Research
+
+As the Software Engineer for this project, my focus is on building the site’s frontend and ensuring a smooth user experience for our core service.
+
+The goal of our system is building a webapp that gives personalized recommendations based on a set (something along the lines of 5 or 10 films) given by the user themselves.
+
+I started by creating a dedicated branch to avoid conflicts with the team’s work, then synced it with the current state of main (which is still in its early stages).
+
+Before diving into tooling decisions, I spent time researching competitors’ platforms to gather inspiration. 
+
+The first hour of my work session was dedicated to exploring existing platforms, noting features and design elements that could be adapted or refined for our project. Key takeaways included:
+
+1) Implementation of a movie-map that may allow the user for a more dynamical and interactive interface (https://www.movie-map.com/)
+2) Filter based on moods of the user and link to where the movie is available (https://www.suggestmemovie.com/)
+3) A simple web interface with a black theme, I want to be eyes-friendly (https://easy-peasy.ai/templates/movie-recommender)
+
+Next steps: Draft a low-fidelity wireframe based on these insights (a hand-made sketch of the GUI) and align with the team on tech stack choices.
+
+Feature Requirements: User Flow & Functionality
+
+After discussing with the team, I’ve outlined the core features the site must include:
+1. Dynamic Movie Search Input
+    + A text box where users can input reference films for recommendations.
+    + As the user types, a dropdown displays matching movies (poster + title), with substring search (e.g., typing "Start" suggests Star Wars, Battlestar Galactica, or Star Trek).
+
+2. Movie Selection & Validation
+    + Users can add a movie by:
+        - Clicking an item from the dropdown.
+        - Pressing Enter (auto-selects the top suggestion).
+    + If the input is misspelled/inexact, the system suggests the closest matches.
+
+3. Interactive Selection Panel
+    + Selected movies appear in a scrollable right-side panel (poster + title).
+    + Each entry includes a removal option (e.g., "−" button or trash icon) for corrections.
+
+4. AI Recommendation Trigger
+    + A button at the panel’s bottom triggers the recommendation model.
+    + Disabled until 5+ films are selected to ensure valid inputs.
+
+5. Results Page
+    + Displays recommended films (poster + title).
+    + Hover-over popup shows details (synopsis, genre, rating, etc.).
+
+6. "View as Map" Feature
+    + A toggle button plots films on a 2D KNN-based map, visualizing similarity clusters.
+
+7. Persistent State & Navigation
+    + Users can return to recommendations while retaining their original input list.
+    + The right panel preserves the selection history for adjustments.
+
+Initial Wireframing & Design Planning
+
+I started by sketching a hand-drawn wireframe of the site based on the previously defined features. This helps me visualize the layout and solidify the user flow before diving into development.
+
+Homepage Layout (Refer to first image)
+
+The first screen users encounter will be split into two main sections:
+
+    + Left Side: A brief welcome message and the movie search bar. As the user types, a dropdown will appear below the bar displaying matching film titles (with posters).
+        - Key JavaScript Functions:
+            * Query the database for partial/fuzzy matches (e.g., "Star" → Star Wars).
+            * Autocorrect minor typos in the user’s input.
+        - Interaction: Clicking a dropdown item (or pressing Enter) adds the movie to the right-side selection panel.
+    + Right Side: A dedicated panel for selected movies, formatted as poster + title + remove button.
+        - Visual Cue: Grayed-out placeholder slots indicate how many more films are needed (e.g., "3/5 selected") before the recommendation button activates.
+
+Results Page (Refer to second image)
+
+After submitting 5+ films, the AI processes the input and displays:
+
+    + Left Side: Recommended films in a scrollable grid. Hovering/clicking reveals a popup with details (plot, genre, etc.).
+    + Bottom-Right Buttons:
+        - "View as Map": Switches to the KNN-based 2D visualization.
+        - "Back": Returns to the homepage without losing the user’s original selections.
+
+Bonus: A top-right toggle button will switch between dark/light themes with a smooth animation—a small but impactful UX touch.
+
+With the wireframes clarified, my immediate next step is to evaluate development tools, weighing options like Streamlit for rapid prototyping against a custom HTML/CSS/JavaScript stack for greater flexibility. I’ll also research frameworks like React or Vue.js to assess their suitability for our interactive components, then align with the team on the final tech stack.
