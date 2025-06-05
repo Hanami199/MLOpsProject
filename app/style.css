@@ -1,0 +1,147 @@
+/* style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f0f0f0;
+    color: #111;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+body.dark {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+.toggle-switch {
+    width: 80px;
+    height: 40px;
+    background: #ddd;
+    border-radius: 50px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-switch .icon {
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    transition: all 0.4s ease-in;
+}
+
+body.dark .toggle-switch {
+    background: #444;
+}
+
+body.dark .toggle-switch .icon {
+    left: 45px;
+    background: #222;
+    color: #fdd835;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.left-panel {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.left-panel h2 {
+    font-size: 24px;
+}
+
+.left-panel form {
+    display: flex;
+    gap: 10px;
+}
+
+.left-panel input {
+    padding: 10px;
+    font-size: 16px;
+    flex: 1;
+}
+
+.left-panel button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.suggestion-box {
+    flex: 2;
+    height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    border: 2px dashed #aaa;
+    background-color: #fff;
+    color: #000;
+}
+
+body.dark .suggestion-box {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+}
+
+/* ...existing code... */
+.suggestions-list {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    width: 300px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    list-style: none;
+}
+
+.suggestions-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestions-list li:hover {
+    background: #eee;
+}
+
+body.dark .suggestions-list {
+    background: #222;
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark .suggestions-list li:hover {
+    background: #333;
+}
