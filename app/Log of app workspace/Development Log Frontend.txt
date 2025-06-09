@@ -120,3 +120,61 @@ While this first version meets basic requirements, several improvements remain:
     + Enhancing overall visual design
 
 I'll hold off on developing the results page until our ML engineer completes the recommendation model. For now, my next steps will focus on polishing the existing interface and expanding its functionality. 
+
+Refining Version 1.0: Problem Solving and UI Enhancements
+
+Before implementing new features, I focused on addressing existing issues in the interface while significantly improving the overall user experience. Here's a detailed breakdown of the challenges encountered and the solutions implemented:
+
+Dropdown Positioning and Behavior
+The initial implementation had the search dropdown appearing too high above the input field. Through CSS adjustments, I successfully repositioned it below the search bar. However, this revealed an unexpected visual artifact - a thin shadow line remained visible when the dropdown was hidden. After investigating, I traced this to the dropdown's transition properties in the JavaScript. By modifying the opacity and visibility handling in script.js, I achieved a clean appearance when closed while maintaining smooth animations when opened.
+
+Dynamic Film Removal Functionality
+The right-side panel lacked a way to remove selected films. Inspired by the theme toggle implementation, I added trash can icons next to each film entry. This required:
+    +Creating event listeners for each removal button
+    +Developing JavaScript functions to update both the frontend display
+    +Implementing corresponding backend routes in Flask to maintain data consistency
+    The solution maintains visual consistency with our dark/light theme system while providing clear user feedback during interactions.
+
+Enhanced Input Handling
+The original implementation only supported mouse selection from the dropdown. To improve accessibility, I completely overhauled the keyboard interaction system:
+    +Arrow keys now navigate through dropdown options
+    +Enter key selects the highlighted item (or the first result if none are highlighted)
+    +Form submission is now prevented during search interactions
+    The most challenging aspect was synchronizing the dropdown's scroll position with keyboard navigation. By implementing scrollIntoView() calls and managing focus states, I created a seamless keyboard navigation experience that matches mouse interactions.
+
+Responsive Design Implementation
+Transitioning from pixel-based to relative units (em, rem, %) required a systematic approach:
+    +Established a base font size for consistent scaling
+    +Converted all fixed dimensions to fluid units
+    +Implemented CSS media queries for breakpoints
+    This ensures proper rendering across devices while maintaining our design aesthetic.
+
+Visual Improvements and Microinteractions
+The search bar received special attention to create a modern, polished feel:
+    +Integrated the search button within the input field
+    +Implemented a smooth color transition on hover
+    +Added rounded corners matching the overall design language
+    +Created an animated placeholder that moves to the input border
+    
+    For the film display panel, I:
+    +Added proper spacing between items
+    +Implemented scroll behavior for more than 5 films
+    +Designed placeholder slots with "Add a movie" indicators
+    +Ensured consistent styling across both color themes
+
+Temporary Image Handling
+Without access to the final film database, I:
+    +Created a temporary image caching system
+    +Implemented responsive image containers
+    +Designed fallback states for missing artwork
+    This maintains visual integrity during development while being ready for the final asset pipeline.
+
+The current implementation successfully addresses all core requirements for the input page while establishing patterns we can extend to the results page. With these foundations in place, I'm now prepared to begin work on:
+
+    +The results display page template
+    +Integration with the ML model's output
+    +The interactive film map visualization
+    +Seamless transitions between application states
+
+Each component has been designed with maintainability in mind, ensuring we can efficiently adapt to any changes in the backend requirements or design specifications.
+

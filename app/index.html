@@ -18,7 +18,10 @@
             <h2>How can I suggest you today?</h2>
             <p>Insert 5 or more movies:</p>
             <form id="movieForm" autocomplete="off">
-                <input type="text" id="movieInput" placeholder="Enter movie names" />
+                <div class="input-wrapper">
+                    <input type="text" id="movieInput" placeholder=" " required />
+                    <label for="movieInput" class="floating-label">Enter movie names</label>
+                </div>
                 <button type="submit">Suggest</button>
                 <ul id="suggestions" class="suggestions-list"></ul>
             </form>
