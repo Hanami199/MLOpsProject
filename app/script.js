@@ -10,10 +10,28 @@ let currentSuggestions = [];
 // Mantieni una lista dei film già aggiunti
 const addedMovies = new Set();
 
-toggle.addEventListener("click", ()=>{
+// Funzione per applicare il tema salvato
+function applyTheme() {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+        document.body.classList.add("dark");
+        icon.textContent = "🌙";
+    } else {
+        document.body.classList.remove("dark");
+        icon.textContent = "☀️";
+    }
+}
+
+// Toggle e salvataggio tema
+toggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
-    icon.textContent = document.body.classList.contains("dark") ? "🌙" : "☀️";
+    const isDark = document.body.classList.contains("dark");
+    icon.textContent = isDark ? "🌙" : "☀️";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
 });
+
+applyTheme();
+document.documentElement.classList.remove("dark-preload");
 
 // Funzione per mostrare suggerimenti
 movieInput.addEventListener("input", async function() {
@@ -134,6 +152,7 @@ function addMovieToBox(title) {
         div.remove();
         addedMovies.delete(title);
         renderSuggestionPlaceholder();
+        saveMoviesToSession();
     });
 
     div.appendChild(img);
@@ -142,6 +161,7 @@ function addMovieToBox(title) {
     suggestionBox.appendChild(div);
 
     renderSuggestionPlaceholder();
+    saveMoviesToSession();
 }
 
 // Nascondi suggerimenti quando si clicca fuori
@@ -194,7 +214,58 @@ function renderSuggestionPlaceholder() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", renderSuggestionPlaceholder);
+document.addEventListener("DOMContentLoaded", () => {
+    loadMoviesFromSession();
+    renderSuggestionPlaceholder();
+    updateFloatingBorder();
+});
+
+document.getElementById("movieForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    // Se l'input è vuoto o non in focus, invia i film
+    if (!movieInput.value.trim() || document.activeElement !== movieInput) {
+        submitMovies();
+    }
+    // Altrimenti, lascia che l'input venga gestito normalmente (aggiunta film)
+});
+
+function submitMovies() {
+    const movies = Array.from(document.querySelectorAll('.suggestion-movie span'))
+        .map(span => span.textContent);
+
+    const minAlert = document.getElementById('minAlert');
+    if (movies.length < 5) {
+        minAlert.style.display = "block";
+        setTimeout(() => { minAlert.style.display = "none"; }, 2500);
+        return;
+    } else {
+        minAlert.style.display = "none";
+    }
+
+    sessionStorage.setItem('suggestedMovies', JSON.stringify(movies));
+    window.location.href = "results.html";
+}
+
+// Permetti invio globale solo se l'input NON è in focus
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && document.activeElement !== movieInput) {
+        e.preventDefault();
+        submitMovies();
+    }
+});
 
 updateFloatingBorder();
 renderSuggestionPlaceholder();
+
+function saveMoviesToSession() {
+    const movies = Array.from(document.querySelectorAll('.suggestion-movie span'))
+        .map(span => span.textContent);
+    sessionStorage.setItem('suggestedMovies', JSON.stringify(movies));
+}
+
+function loadMoviesFromSession() {
+    const movies = JSON.parse(sessionStorage.getItem('suggestedMovies') || "[]");
+    movies.forEach(title => {
+        addMovieToBox(title);
+    });
+}

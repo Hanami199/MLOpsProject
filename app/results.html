@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suggested Movies</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script>
+    if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark-preload");
+        document.body && document.body.classList.add("dark");
+    }
+    </script>
+</head>
+<body>
+    <div class="toggle-switch" id="toggleSwitch">
+        <span class="icon">☀️</span>
+    </div>
+    <div class="container">
+        <div class="suggestion-box" id="resultsBox">
+            <button id="backBtn" class="back-btn" type="button">← Back</button>
+            <h2>Your movies:</h2>
+            <ul id="movieList"></ul>
+        </div>
+    </div>
+    <script src="results.js"></script>
+</body>
+</html>
