@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How can I suggest you today?</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+    <!-- Bottone in alto a destra -->
+    <div class="toggle-switch" id="toggleSwitch">
+        <div class="icon">☀️</div>
+    </div>
+
+    <div class="container">
+        <!-- Area sinistra -->
+        <div class="left-panel">
+            <h2>How can I suggest you today?</h2>
+            <p>Insert 5 or more movies:</p>
+            <form id="movieForm" autocomplete="off">
+                <div class="input-wrapper">
+                    <input type="text" id="movieInput" placeholder=" " required />
+                    <label for="movieInput" class="floating-label">Enter movie names</label>
+                </div>
+                <button type="submit">Suggest</button>
+                <ul id="suggestions" class="suggestions-list"></ul>
+            </form>
+        </div>
+
+            <!-- Area destra -->
+        <div class="suggestion-box" id="suggestionBox">
+        <!-- Qui verranno aggiunti gli elementi -->
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+
+    <footer></footer>
+</body>
+</html>
