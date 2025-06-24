@@ -1,0 +1,180 @@
+Development Log – Frontend Setup & Research
+
+As the Software Engineer for this project, my focus is on building the site’s frontend and ensuring a smooth user experience for our core service.
+
+The goal of our system is building a webapp that gives personalized recommendations based on a set (something along the lines of 5 or 10 films) given by the user themselves.
+
+I started by creating a dedicated branch to avoid conflicts with the team’s work, then synced it with the current state of main (which is still in its early stages).
+
+Before diving into tooling decisions, I spent time researching competitors’ platforms to gather inspiration. 
+
+The first hour of my work session was dedicated to exploring existing platforms, noting features and design elements that could be adapted or refined for our project. Key takeaways included:
+
+1) Implementation of a movie-map that may allow the user for a more dynamical and interactive interface (https://www.movie-map.com/)
+2) Filter based on moods of the user and link to where the movie is available (https://www.suggestmemovie.com/)
+3) A simple web interface with a black theme, I want to be eyes-friendly (https://easy-peasy.ai/templates/movie-recommender)
+
+Next steps: Draft a low-fidelity wireframe based on these insights (a hand-made sketch of the GUI) and align with the team on tech stack choices.
+
+Feature Requirements: User Flow & Functionality
+
+After discussing with the team, I’ve outlined the core features the site must include:
+1. Dynamic Movie Search Input
+    + A text box where users can input reference films for recommendations.
+    + As the user types, a dropdown displays matching movies (poster + title), with substring search (e.g., typing "Start" suggests Star Wars, Battlestar Galactica, or Star Trek).
+
+2. Movie Selection & Validation
+    + Users can add a movie by:
+        - Clicking an item from the dropdown.
+        - Pressing Enter (auto-selects the top suggestion).
+    + If the input is misspelled/inexact, the system suggests the closest matches.
+
+3. Interactive Selection Panel
+    + Selected movies appear in a scrollable right-side panel (poster + title).
+    + Each entry includes a removal option (e.g., "−" button or trash icon) for corrections.
+
+4. AI Recommendation Trigger
+    + A button at the panel’s bottom triggers the recommendation model.
+    + Disabled until 5+ films are selected to ensure valid inputs.
+
+5. Results Page
+    + Displays recommended films (poster + title).
+    + Hover-over popup shows details (synopsis, genre, rating, etc.).
+
+6. "View as Map" Feature
+    + A toggle button plots films on a 2D KNN-based map, visualizing similarity clusters.
+
+7. Persistent State & Navigation
+    + Users can return to recommendations while retaining their original input list.
+    + The right panel preserves the selection history for adjustments.
+
+Initial Wireframing & Design Planning
+
+I started by sketching a hand-drawn wireframe of the site based on the previously defined features. This helps me visualize the layout and solidify the user flow before diving into development.
+
+Homepage Layout (Refer to first image)
+
+The first screen users encounter will be split into two main sections:
+
+    + Left Side: A brief welcome message and the movie search bar. As the user types, a dropdown will appear below the bar displaying matching film titles (with posters).
+        - Key JavaScript Functions:
+            * Query the database for partial/fuzzy matches (e.g., "Star" → Star Wars).
+            * Autocorrect minor typos in the user’s input.
+        - Interaction: Clicking a dropdown item (or pressing Enter) adds the movie to the right-side selection panel.
+    + Right Side: A dedicated panel for selected movies, formatted as poster + title + remove button.
+        - Visual Cue: Grayed-out placeholder slots indicate how many more films are needed (e.g., "3/5 selected") before the recommendation button activates.
+
+Results Page (Refer to second image)
+
+After submitting 5+ films, the AI processes the input and displays:
+
+    + Left Side: Recommended films in a scrollable grid. Hovering/clicking reveals a popup with details (plot, genre, etc.).
+    + Bottom-Right Buttons:
+        - "View as Map": Switches to the KNN-based 2D visualization.
+        - "Back": Returns to the homepage without losing the user’s original selections.
+
+Bonus: A top-right toggle button will switch between dark/light themes with a smooth animation—a small but impactful UX touch.
+
+With the wireframes clarified, my immediate next step is to evaluate development tools, weighing options like Streamlit for rapid prototyping against a custom HTML/CSS/JavaScript stack for greater flexibility. I’ll also research frameworks like React or Vue.js to assess their suitability for our interactive components, then align with the team on the final tech stack.
+
+Technology Stack Decision: Choosing the Right Approach
+
+After carefully evaluating our options for the website implementation, I weighed the advantages and limitations of each potential solution.
+
+The Streamlit approach initially seemed appealing due to its Python-based framework, which would integrate seamlessly with our AI model and database. Its automated deployment system also promised quicker setup times. However, this solution ultimately proved too restrictive - the platform's limited dynamic capabilities would force us to compromise on several key features the team had prioritized.
+
+The alternative of full customization using HTML, CSS, and JavaScript offers significantly more flexibility. While HTML may be nearly three decades old, its container-based structure remains intuitive and pairs perfectly with CSS for styling control. JavaScript will enable the dynamic functionality we need to meet modern web standards and implement all our planned features. The main drawback is the substantial development time required, but given our team's resource allocation and timeline, this tradeoff is acceptable.
+
+Following thorough discussion with the team, we've decided to proceed with full customization. The benefits simply outweigh the challenges in our case. With proper task distribution among team members and the time we have available, we're confident in delivering a solid version of the site. I'm not promising perfection - unexpected hurdles may arise during development - but this approach gives us the best foundation.
+
+With this decision made, my immediate next step is to begin translating our hand-drawn wireframes into an initial working prototype of the site structure.
+
+Team Meeting Notes: June 5, 2025 - Addressing Model Challenges
+
+During our first team sync, the ML engineer raised concerns about potential inconsistencies in the AI model's ability to calculate accurate film correlations. While we discussed alternative approaches, we ultimately decided to proceed with our original plan while preparing a fallback option.
+
+Key Takeaways & Impact on Development:
+    + Plan A: Continue with our custom recommendation model as designed.
+    + Plan B: If the model underperforms, we'll pivot to querying an LLM for film suggestions instead.
+
+Adaptation Strategy for Frontend:
+My development approach remains unchanged for now—I'll keep building the original two-page layout (input page + results page). Should we switch to the LLM approach, I can quickly modify the input page to accommodate a single query box while maintaining the same results display.
+
+Next Steps:
+Proceed with Version 1.0 development, keeping the code modular enough to accommodate potential changes. I'll also explore a single-page variant as a secondary backup, though this remains lower priority unless needed.
+
+Frontend Development Progress: Building Version 1.0
+
+I've focused on implementing the first version of the film input interface, where users can search for movies and add them to the right-side selection panel. My development process began with establishing the basic HTML structure and CSS styling.
+
+The first feature I implemented was the dark/light theme toggle, as it was both straightforward and essential for user comfort. I defined the body and body.dark styles in CSS, then created a smooth transition animation to prevent jarring visual changes. The toggle button was positioned in the top-right corner for intuitive access. While I haven't finalized the color palette yet, this foundational work will make future styling adjustments easier.
+
+The page layout was divided into two main sections: a left panel containing the search form and input field, and a right panel for displaying selected films. After styling these components, I faced the challenge of implementing the film search functionality. Since browsers restrict direct CSV access for security reasons, I developed a Python/Flask backend solution. This backend processes search queries in real-time, accesses my temporary CSV database of about 20 sample film titles, and returns matching results to the frontend.
+
+Through JavaScript functions, I established communication between the frontend and Flask backend. The system now successfully sends queries, receives responses, and displays matching films in a dropdown menu. When users click a result, it's added to the selection panel.
+
+While this first version meets basic requirements, several improvements remain:
+    + Refining the dropdown behavior
+    + Implementing film removal functionality
+    + Adding keyboard submission (Enter key support)
+    + Enhancing overall visual design
+
+I'll hold off on developing the results page until our ML engineer completes the recommendation model. For now, my next steps will focus on polishing the existing interface and expanding its functionality. 
+
+Refining Version 1.0: Problem Solving and UI Enhancements
+
+Before implementing new features, I focused on addressing existing issues in the interface while significantly improving the overall user experience. Here's a detailed breakdown of the challenges encountered and the solutions implemented:
+
+Dropdown Positioning and Behavior
+The initial implementation had the search dropdown appearing too high above the input field. Through CSS adjustments, I successfully repositioned it below the search bar. However, this revealed an unexpected visual artifact - a thin shadow line remained visible when the dropdown was hidden. After investigating, I traced this to the dropdown's transition properties in the JavaScript. By modifying the opacity and visibility handling in script.js, I achieved a clean appearance when closed while maintaining smooth animations when opened.
+
+Dynamic Film Removal Functionality
+The right-side panel lacked a way to remove selected films. Inspired by the theme toggle implementation, I added trash can icons next to each film entry. This required:
+    +Creating event listeners for each removal button
+    +Developing JavaScript functions to update both the frontend display
+    +Implementing corresponding backend routes in Flask to maintain data consistency
+    The solution maintains visual consistency with our dark/light theme system while providing clear user feedback during interactions.
+
+Enhanced Input Handling
+The original implementation only supported mouse selection from the dropdown. To improve accessibility, I completely overhauled the keyboard interaction system:
+    +Arrow keys now navigate through dropdown options
+    +Enter key selects the highlighted item (or the first result if none are highlighted)
+    +Form submission is now prevented during search interactions
+    The most challenging aspect was synchronizing the dropdown's scroll position with keyboard navigation. By implementing scrollIntoView() calls and managing focus states, I created a seamless keyboard navigation experience that matches mouse interactions.
+
+Responsive Design Implementation
+Transitioning from pixel-based to relative units (em, rem, %) required a systematic approach:
+    +Established a base font size for consistent scaling
+    +Converted all fixed dimensions to fluid units
+    +Implemented CSS media queries for breakpoints
+    This ensures proper rendering across devices while maintaining our design aesthetic.
+
+Visual Improvements and Microinteractions
+The search bar received special attention to create a modern, polished feel:
+    +Integrated the search button within the input field
+    +Implemented a smooth color transition on hover
+    +Added rounded corners matching the overall design language
+    +Created an animated placeholder that moves to the input border
+    
+    For the film display panel, I:
+    +Added proper spacing between items
+    +Implemented scroll behavior for more than 5 films
+    +Designed placeholder slots with "Add a movie" indicators
+    +Ensured consistent styling across both color themes
+
+Temporary Image Handling
+Without access to the final film database, I:
+    +Created a temporary image caching system
+    +Implemented responsive image containers
+    +Designed fallback states for missing artwork
+    This maintains visual integrity during development while being ready for the final asset pipeline.
+
+The current implementation successfully addresses all core requirements for the input page while establishing patterns we can extend to the results page. With these foundations in place, I'm now prepared to begin work on:
+
+    +The results display page template
+    +Integration with the ML model's output
+    +The interactive film map visualization
+    +Seamless transitions between application states
+
+Each component has been designed with maintainability in mind, ensuring we can efficiently adapt to any changes in the backend requirements or design specifications.
+

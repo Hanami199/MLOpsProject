@@ -7,7 +7,7 @@ We will consistenly communicate (through WA), and then do some alignement calls 
 
 ---
 
-### ✅ Day 1, 2, 3 – Planning & Setup
+### ✅ Phase 1 – Planning & Setup
 **Goal:** Define direction, organize repository, and split responsibilities. Then start working on the basis:
 
 - [X] Define user stories and roles 
@@ -24,7 +24,7 @@ We will consistenly communicate (through WA), and then do some alignement calls 
 
 ---
 
-### ✅ Day 4 – Testing & Improvement
+### ✅ Phase 2 – Testing & Improvement
 **Goal:** Improve quality and consistency
 
 - [ ] Unit test recommendation function 
@@ -33,7 +33,7 @@ We will consistenly communicate (through WA), and then do some alignement calls 
 
 ---
 
-### ✅ Day 5 – Feedback & Polish
+### ✅ Phase 3 – Feedback & Polish
 **Goal:** Apply feedback and final adjustments
 
 - [ ] Internal team review and QA 
@@ -44,7 +44,7 @@ We will consistenly communicate (through WA), and then do some alignement calls 
 
 ---
 
-### ✅ Day 6 – Delivery - The End!
+### ✅ Phase 4 – Delivery - The End!
 **Goal:** Deliver final version and documentation
 
 - [ ] Push final version to main 
