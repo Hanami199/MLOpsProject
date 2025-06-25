@@ -1,0 +1,13 @@
+torch                 == 2.4.1 
+einops                == 0.8
+torchvision           == 0.19.1 
+torchaudio            == 2.4.1
+numpy                 == 2.1
+scikit-learn          == 1.5
+matplotlib            == 3.9
+
+pandas                == 2.2.3
+sentence-transformers
+
+ipywidgets
+umap-learn

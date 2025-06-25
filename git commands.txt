@@ -1,0 +1,11 @@
+# git checkout dev-ml                          # sposta sul branch
+# git fetch origin                             # connette al branch principale
+# git rebase main                              # connette con il main
+
+# git add .
+# git commit -m "changes" 
+# git push                                     # update sul branch
+# git push -u origin dev-data                  # richiesta merge con il main
+
+
+
