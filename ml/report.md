@@ -171,7 +171,7 @@ model.predict(user_movie_indices: np.array) -> List[int]
 flowchart TD
     A[User Selects Movies] --> B[Convert to Indices]
     B --> C[Fetch Encoded Features]
-    C --> D[Compute Distance (KNN)]
+    C --> D[Compute Distance KNNs]
     D --> E[Return Top-K Nearest Movies]
     E --> F[Display Metadata in UI]
 ```
