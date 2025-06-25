@@ -154,6 +154,7 @@ class MLOVIE:
         for i, name in enumerate(self.col_names):
             self.w[name] = w[name] if isinstance(w, dict) else w[i]
 
+
     def CosineSimilarity(self, z, X, sort_idx = False):
         z = np.reshape(z, (1, -1))
         norm = (np.linalg.norm(z) * np.linalg.norm(X, axis=1, keepdims=True))
