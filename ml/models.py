@@ -3,21 +3,22 @@ import pandas as pd
 from tqdm.notebook import tqdm
 import os
 import json
+from data.utility_tools import DataScaler
 
 
 class KNN:
     def __init__(self, k=10):
         self.k   = k
         self.res = k
+        self.mw_path = "./data/matrix_weighted.npz"
 
 
     def fit(self, X):
         self.X = X
         self.n, self.d = X.shape
 
-
     def predict(self, X):
-        n_movies = X.shape[0]
+        n_movies = len(X)
         idxs, distances = np.zeros((n_movies, self.res)), np.zeros((n_movies, self.res))
         
         for i, x in enumerate(X):
@@ -31,8 +32,23 @@ class KNN:
         filter = ~np.isin(idxs_sorted, X)                                      # remove searched indexes
         _, unique_idx = np.unique(idxs_sorted[filter], return_index=True)      # get where there is the first new number
 
-        return idxs_sorted[filter][np.sort(unique_idx)][:self.k]               # return the first k movie index
-           
+        return idxs_sorted[filter][np.sort(unique_idx)][:self.k]               # return the first k movie index           
+
+    def save(self, df):
+        ds = DataScaler(df)
+        df = ds.scale_feature_by_factor('duration_final', 0.03)
+        df = ds.scale_feature_by_factor('release_year', 0.001)
+        df = ds.scale_feature_by_factor('rating', 2)
+        df = ds.scale_all_features_by_factor("cast", 1.5)
+        df = ds.scale_all_features_by_factor("director", 1.5)
+        df = ds.scale_all_features_by_factor("country", 1.5)
+        df = ds.scale_all_features_by_factor("listed_in", 4)
+        X = ds.generate_X()
+        np.savez_compressed(self.mw_path, my_matrix = X)
+
+    def load(self):
+        self.X = np.load(self.mw_path, allow_pickle=True)['my_matrix']
+        self.n, self.d = self.X.shape
 
     def _predict(self, idx):
         x = self.X[idx]
@@ -40,10 +56,6 @@ class KNN:
         distances = np.sqrt(np.sum( difference*difference, axis=1))/self.n
         idx = np.argsort(distances)[1:self.res + 1]
         return idx, distances[idx]
-    
-
-
-
 
 
 class MLOVIE:
@@ -102,7 +114,7 @@ class MLOVIE:
     
     
     def predict(self, X):
-        n_movies = X.shape[0]
+        n_movies = len(X)
         idxs, scores = np.zeros((n_movies, self.res)), np.zeros((n_movies, self.res))
         
         for i, x in enumerate(X):

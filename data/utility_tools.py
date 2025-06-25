@@ -1,9 +1,4 @@
-import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
-import os
-import json
-from tqdm.notebook import tqdm
 
 class DataScaler:
     """This class is used to scale the features of a DataFrame.
@@ -18,15 +13,11 @@ class DataScaler:
         return self.df
 
     def scale_all_features_by_factor(self, feature, factor):
-        if feature is "cast":
-            self.df = self._scale_cast_features(factor)
-        elif feature is "director":
-            self.df = self._scale_director_features(factor)
-        elif feature is "country":
-            self.df = self._scale_country_features(factor)
-        elif feature is "listed_in":
-            self.df = self._scale_listed_in_features(factor)
-        return self.df
+        feature_dict = {"cast": self._scale_cast_features,
+                        "director": self._scale_director_features,
+                        "country": self._scale_country_features,
+                        "listed_in": self._scale_listed_in_features}
+        return feature_dict[feature](factor)
     
     def generate_X(self):
         return self.df.drop(columns=['show_id', 'title', 'description']).to_numpy(dtype='float32')
