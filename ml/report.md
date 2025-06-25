@@ -51,7 +51,7 @@ As detailed in the SRS:
 
 ### Testing Plan:
 - **Unit Tests**:
-  - For each model method (e.g., `predict()`)
+  - For each model method (e.g., `predict()` and  `_predict()`)
   - For preprocessing functions
 - **Integration Tests**:
   - Model + Frontend integration (e.g., test full user interaction)
@@ -87,7 +87,7 @@ As detailed in the SRS:
 ### Data Exploration:
 
 Key KPIs:
-- ~6,000 entries
+- ~8000 entries
 - Most entries are movies (~75%)
 - Top genres: Dramas, Comedies, Documentaries
 - Ratings: Mainly `TV-MA`, `PG`, `R`
@@ -107,32 +107,35 @@ Input: `n` selected movie titles
 Output: `k` recommended movie titles with metadata
 
 ### Steps:
-1. **Preprocessing**: One-hot encoding, sentence embeddings
-2. **Embedding Generation**: For text fields (`description`, `listed_in`, `cast`)
-3. **Similarity Computation**: Using vector distance metrics
+1. **Preprocessing**: One-hot encoding, sentence embeddings, normalization
+2. **Embedding Generation**: For text fields (`director`, `listed_in`, `cast`, `description`)
+3. **Similarity Computation**: Using cosine similarity and vector distance metrics
 4. **Recommendation**: Select closest neighbors based on aggregate similarity
 
 
 ## Model Variants and Evaluation
 
 ### ✅ KNN on One-Hot Encoded Dataset
-- Variables used: genre, rating, duration, country
-- Distance metric: cosine
-- Fast and interpretable
+- Variables used: genre, rating, duration, country, year
+- Distance metric: vector distance
+- High numer of feature but interpretable
 - Result: Consistent recommendations
-- ✅ **Final default model** due to speed and explainability
+- Status: Available, but not default
+
 
 ### 🧪 KNN on Embedding-Based Features
-- Used: Sentence-BERT or similar on `description`, `title`, `cast`
+- Used: Sentence-BERT on `director`,  `title`, `cast`, `description`
 - High semantic richness
+- Distance metric: cosine and vector distance
 - Slower inference (but acceptable)
+- Inferior interpretability
 - Result: More nuanced recommendations (e.g., matching by theme, not just genre)
-- Status: Available, but not default
+- ✅ **Final default model** due to precision
 
 ### ⚠️ VAE (Variational Autoencoder)
 - Used to reduce dimensionality of embedding features
 - Trained on latent space, then searched neighbors
-- Poor results: low recommendation quality and interpretability
+- Poor results: t-SNE visualization shows that closer in meaning element were not closer in the latent space
 - Status: **Discarded**
 
 ### 📌 t-SNE and UMAP for Exploration
@@ -144,7 +147,7 @@ Output: `k` recommended movie titles with metadata
 
 ```python
 # models.py
-model.predict(user_movie_indices: np.array) -> List[int]
+model.predict(user_movie_indices: np.array) -> np.array
 ```
 
 - Returns indices of most similar movies
@@ -152,15 +155,15 @@ model.predict(user_movie_indices: np.array) -> List[int]
 
 ## Performance
 
-| Model                     | Time (avg) | Quality        | Interpretability | Usage       |
+| Model                    | Time (avg) | Quality        | Interpretability | Usage       |
 |--------------------------|------------|----------------|------------------|-------------|
-| KNN (One-Hot)            | <1 sec     | Good           | High             | ✅ Default   |
-| KNN (Embeddings)         | ~1–2 sec   | Very Good      | Medium           | Available   |
-| VAE                      | ~3 sec     | Poor           | Low              | Discarded   |
+| KNN (One-Hot)            | <1 sec     | Good           | High             | Available   |
+| KNN (Embeddings)         | <1 sec     | Very Good      | Medium           | ✅ Default |
+| VAE                      | NA         | Poor           | Low              | Discarded   |
 
 
 ## Final Pipeline Justification
-- **Simplicity**: KNN avoids training time and allows easy feature tweaking
+- **Simplicity**: KNN (Embeddings) generate precise results
 - **Speed**: Minimal delay in prediction (<1 sec)
 - **Interpretability**: Features are understandable (e.g., genre proximity)
 - **Reusability**: Predict interface is modular and can host future models
