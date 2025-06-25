@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
+import os
+import json
+
 
 class KNN:
     def __init__(self, k=10):
@@ -64,6 +67,8 @@ class MLOVIE:
         assert self.model is not None, "model is None"
 
         self.n, self.d = df.shape
+        n = col_names.shape[0]
+
         w = np.ones(n)/n if w is None else w/np.sum(w)
         self.col_names = col_names
 
