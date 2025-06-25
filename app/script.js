@@ -220,6 +220,20 @@ document.addEventListener("DOMContentLoaded", () => {
     updateFloatingBorder();
 });
 
+// Salva la scelta dell'algoritmo ogni volta che viene cambiata
+const algoSelect = document.getElementById('algorithm');
+
+// All'avvio, se c'è già una scelta salvata, selezionala nella tendina
+const savedAlgo = sessionStorage.getItem('selectedAlgorithm');
+if (savedAlgo) {
+    algoSelect.value = savedAlgo;
+}
+
+// Salva la scelta dell'algoritmo ogni volta che viene cambiata
+algoSelect.addEventListener('change', function() {
+    sessionStorage.setItem('selectedAlgorithm', algoSelect.value);
+});
+
 document.getElementById("movieForm").addEventListener("submit", function(e) {
     e.preventDefault();
     // Se l'input è vuoto o non in focus, invia i film
@@ -269,3 +283,6 @@ function loadMoviesFromSession() {
         addMovieToBox(title);
     });
 }
+
+const selectedAlgo = document.getElementById('algorithm').value;
+sessionStorage.setItem('selectedAlgorithm', selectedAlgo);

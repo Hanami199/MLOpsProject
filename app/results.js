@@ -139,3 +139,15 @@
         document.getElementById('backBtn').addEventListener('click', function() {
             window.location.href = "index.html";
         });
+
+        // Recupera il nome dell'algoritmo scelto
+        const algoMap = {
+            "algo1": "Algorithm 1",
+            "algo2": "Algorithm 2"
+        };
+        const selectedAlgo = sessionStorage.getItem('selectedAlgorithm') || "algo1";
+        const algoName = algoMap[selectedAlgo] || selectedAlgo;
+
+        // Aggiorna l'intestazione
+        const h2 = document.querySelector("#resultsBox h2");
+        h2.textContent = `These are the results with ${algoName}:`;

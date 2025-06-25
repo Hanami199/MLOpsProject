@@ -475,6 +475,109 @@ body.dark .suggestion-box .back-btn:hover {
     color: #fff !important;
 }
 
+.top-bar {
+    position: absolute;
+    top: 1vw;
+    right: 1vw;
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* ridotto per evitare che si allarghi troppo */
+    z-index: 30;
+}
+
+.algo-choice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.2rem 0.7rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    min-width: 0;
+    max-width: 220px;
+}
+
+body.dark .algo-choice {
+    background: #222;
+    color: #fff;
+}
+
+.algo-choice label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1976d2;
+    white-space: nowrap;
+}
+
+body.dark .algo-choice label {
+    color: #fdd835;
+}
+
+.algo-choice select {
+    padding: 0.2rem 0.7rem;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    background: #fff;
+    color: #111;
+    transition: border 0.2s;
+    min-width: 90px;
+    max-width: 120px;
+}
+
+body.dark .algo-choice select {
+    background: #222;
+    color: #fff;
+    border-color: #555;
+}
+
+.algo-choice-bar {
+    position: absolute;
+    top: 2vw;
+    left: 2vw;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.4rem 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    z-index: 30;
+}
+
+body.dark .algo-choice-bar {
+    background: #222;
+    color: #fff;
+}
+
+.algo-choice-bar label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #111;
+}
+
+body.dark .algo-choice-bar label {
+    color: #fff;
+}
+
+.algo-choice-bar select {
+    padding: 0.3rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    background: #fff;
+    color: #111;
+    transition: border 0.2s;
+}
+
+body.dark .algo-choice-bar select {
+    background: #222;
+    color: #fff;
+    border-color: #555;
+}
+
 /* Responsive: mobile and tablet */
 @media (max-width: 900px) {
     .container {
