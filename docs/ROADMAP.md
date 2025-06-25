@@ -1,9 +1,8 @@
 # 🎬 Movie Recommendation WebApp - Agile Roadmap
 
-## 🗓 Sprint: June 1–7, 2025
+## 🗓 Sprint
 
-We will have only one sprint (given the simplicity of the webapp) that will last 7 days.
-We will consistenly communicate (through WA), and then do some alignement calls throughout the week (something along every 2 days).
+We will consistenly communicate (through WA), and then do some alignement calls every week.
 
 ---
 
