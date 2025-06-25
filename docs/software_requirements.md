@@ -50,9 +50,9 @@ This document is meant to be useful for:
 ### 2.1 Product Perspective
 This webapp is designed to be a standalone project, with a sufficiently simple client-server architecture.
 
-We expect the frontend to be built using **Streamlit**, and to allow users to interact with the webapp by selecting movies.
+We expect the frontend to be built using HTML, CSS and JavaScript, and to allow users to interact with the webapp by selecting movies.
 
-The backend will then process this selections using a pre-trained, or an online learning, machine learning model (to be defined), that returns movie reccomendations based on the similarity to the users' choices.
+The backend (implemented with Flask) will then process this selections using a pre-trained, or an online learning, machine learning model (to be defined), that returns movie reccomendations based on the similarity to the users' choices.
 
 
 ### 2.2 Product Functions
