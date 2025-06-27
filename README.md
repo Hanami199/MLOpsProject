@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/d60b6924-f86f-4a9b-9db9-4aabaeff557b
 # MLOpsProject
 
 Repo for the final project of the course of Machine Learning Operations.
