@@ -12,6 +12,8 @@
 
 
 \setlength{\parindent}{0pt} % Disable paragraph indentation
+\setlength{\columnsep}{40pt} 
+
 \newfontfamily\emojifont{Segoe UI Emoji}[Renderer=Harfbuzz]
 
 %\newfontfamily\emojifont[Path=fonts/]{NotoColorEmoji-Regular.ttf}
@@ -38,7 +40,7 @@ In a period in which a user has to choose between tens of different digital stre
 
 Another keypoint is that, while there are tradition recommendation systems embedded directly into these services, they are not always transparent or personalized, particularly when users’ history is not present.
 
-Our proposal, Recommendo, has been built with these challenges in mid: we allow users to select up to 10 (at least one) films they already like and then return tailored recommendations based on those choices. The core of our project is a data-drive, machine learning-powered recommendation pipeline.
+Our proposal, Recommendo, has been built with these challenges in mind: we allow users to select up to 10 (at least one) films they already like and then return tailored recommendations based on those choices. The core of our project is a data-driven, machine learning-powered recommendation pipeline.
 My role as a machine learning engineer included think and program models, test their performances and work closer to the data engineer to make models more effective as they can.
 
 
@@ -53,7 +55,7 @@ At the beginning of the project, we decided to adopt an Agile software developme
 Task tracking, collaboration and version control were managed using Github projects, which was used to structure the issues and pull request, milestones and so on.
 Each team member worked within their dedicated branch (e.g., dev-architecture for the SE, dev-ml for the MLE, dev-app for the SD and dev-data for the DE) and merged into the main branch only through reviewed pull request, reviewed by the software engineer.
 
-Initialilly, we considered Streamlit for the frontend part, given its easy integration with Python-based ML models, which were the one we decided to work with. However, early in the development, the software developer brought up during a meeting that he felt it was too limited for the task at hand, and that he could do better if we transitioned to a more flexible stack: the backend was build using Flask, to make the integration with python smoother while the frontend was built using HTML, CSS and JavaScript.
+Initially, we considered Streamlit for the frontend part, given its easy integration with Python-based ML models, which were the one we decided to work with. However, early in the development, the software developer brought up during a meeting that he felt it was too limited for the task at hand, and that he could do better if we transitioned to a more flexible stack: the Flask backend was built using Flask, to make the integration with python smoother while the frontend was built using HTML, CSS and JavaScript.
 
 As the ML Engineer, I had to choose models that could work with minimal user input (1–10 film titles), offer low-latency responses, and integrate smoothly into a web-based pipeline. The models considered and/or developed were:
 \begin{itemize}
@@ -64,7 +66,7 @@ As the ML Engineer, I had to choose models that could work with minimal user inp
 
 The dataset used was a public Netflix dataset from Kaggle. It contains key metadata such as title, cast, genre, description, and rating. Preprocessing was a critical step to ensure data was in a form suitable for both classic ML and embedding-based models.
 
-The dataset management and preprocessing were handled by the data engineer, while their integration into the backend required coordination with the software developer. The dataset we decided to use was a dataset containing Netflix’s Movies and TV-series, found on Kaggle.
+The dataset management and preprocessing were handled by the data engineer, while their integration into the Flask backend required coordination with the software developer. The dataset we decided to use was a dataset containing Netflix’s Movies and TV-series, found on Kaggle.
 
 
 
@@ -82,12 +84,12 @@ The recommendation system was developed through a structured pipeline:
     Collaborated with the Data Engineer to handle heterogeneous features:
     \begin{itemize}
         \item Categorical variables (\verb|director, country, cast|) one-hot encoded
-	\item The one-hot encoded high-cardinality features \\ (\verb|cast|) filtered to actors appearing in $\ge 5$ productions
-        \item Text features (\verb|description, listed\_in, cast,| \verb|title|) processed with Sentence-BERT embeddings
+    \item The one-hot encoded high-cardinality features \\ (\verb|cast|) filtered to actors appearing in $\ge 5$ productions
+        \item Text features (\verb|description, listed_in, cast,| \verb|title|) processed with Sentence-BERT embeddings
         \item \verb|duration| converted to numerical format 
-	\item Normalized numerical variables \verb|release_year, rating|
-	\item Dropped non intersting variables (\verb|index|, \\ \verb|date_added|) 
-	\item Dropped observation with missing values on variables different from \verb|director|, \verb|cast|, \verb|country|
+    \item Normalized numerical variables \verb|release_year|, \\ \verb|rating|
+    \item Dropped non intersting variables (\verb|index|, \\ \verb|date_added|) 
+    \item Dropped observation with missing values on variables different from \verb|director|, \verb|cast|, \verb|country|
     \end{itemize}
     
 
@@ -107,12 +109,12 @@ The recommendation system was developed through a structured pipeline:
         \item \textit{VAE}: Variational Autoencoder for latent space learning (abandoned due to poor cluster separation on the latent space)
     \end{itemize}
 
-     On KNN model an hyperparameter for weight the relevance of features has been added, which enhance model performance by given less importance to feature like \verb|Title| and more others like the movie genre.
+     On KNN models an hyperparameter for weight the relevance of features has been added, which enhance model performance by given less importance to feature like \verb|Title| and more others like the movie genre.
     
     \item \textbf{Model Integration}: \\
      Designed unified load and prediction interface:
     \begin{verbatim}
-    def load():
+    def load(self):
         """load necessary data"""
     \end{verbatim}
 
@@ -139,6 +141,13 @@ The machine learning lifecycle followed MLOps principles:
 \end{itemize}
 
 
+
+
+
+
+% _______________________________________
+\section*{Results}
+
 \subsection*{Performance Evaluation}
     Models were evaluated on four critical dimensions:
     \begin{table}[H]
@@ -148,7 +157,7 @@ The machine learning lifecycle followed MLOps principles:
             \textbf{Metric}      & \raisebox{-0.3ex}{\emojifont 🟦} &   \raisebox{-0.3ex}{\emojifont 🟩}  \\
             \hline
             \hline
-            Inference Speed      & $ 232 \ ms$              & $332 \ ms$              \\
+            Inference Speed      & $332  \ ms$              & $ 232 \ ms$              \\
             \hline
             Memory Footprint     & $ 82 \ MB$          & $ 62 \ MB$           \\
             \hline
@@ -161,32 +170,39 @@ The machine learning lifecycle followed MLOps principles:
         \caption{\footnotesize{ 
             {\emojifont 🟦}  KNN (One-Hot) 
             {\emojifont 🟩}  KNN (Embedded)  \\
-            †User-rated relevance (4 test users)} 
+            †Human evaluation: 4 users rated relevance (4 test users)} 
         }
     \end{table}
 
 
-
-
-% _______________________________________
-\section*{Results}
+\subsection*{Key Findings}
 The KNN (Embedded) model demonstrated superior performance across all evaluation metrics:
 \begin{itemize}
-    \item Achieved way faster inference compared to one-hot approach, that has to face high dimensional spaces, and enable usage of the \verb|description| and \verb|Title|  variables 
+    \item Achieved \textbf{$30\%$ faster inference} by avoiding high-dimensional computations
+    \item Enabled semantic analysis of textual features \verb|description| and \verb|Title| 
     \item Produced more semantically coherent recommendations (validated via \verb|t-SNE| and \verb|UMAP| visualizations)
-    \item Enabled real-time suggestions ($<500 \ ms$ response time)
     \item Successfully integrated with backend through standardized interface
+    
+    \item Dimensionality of features:
+    \begin{itemize}
+        \item KNN (one-hot): $2356$ features (high cardinality from one-hot encoding)
+        \item KNN (Embedded): $9$ features, $6$ SBERT with vector representation of $384$ elemets  $+$ $3$ normalized numerical, for a total of $2307$ numerical values per observation
+    \end{itemize}
 \end{itemize}
 
-Key outcomes:
+
+\subsection*{System Outcomes}
 \begin{itemize}
-    \item \textit{Model-Agnostic API}: \\
+    \item Enabled for both models real-time suggestions ($<500 \ ms$ response time)
+    
+    \item Implemented model-agnostic API supporting runtime switching:
     Designed polymorphic interface enabling runtime model switching \\
     $\rightarrow$ \textit{Implementation}: Standardized \texttt{predict()} method across models \\
     $\rightarrow$ \textit{Benefit}: Frontend can toggle between KNN/Embedded models via dropdown
+    
 
-    \item Reduced feature dimensionality from 12,000+ (one-hot) to 384 (SBERT embeddings)
 \end{itemize}
+
 
     
 
@@ -200,7 +216,7 @@ Key outcomes:
 Several challenges emerged during development:
 \begin{itemize}
     \item \textbf{Heterogeneous Data}: TV shows and movies required different duration handling
-    \item \textbf{Semantic Gaps}: Plot descriptions often lacked thematic depth for accurate embedding
+    \item \textbf{Semantic Gaps}: Plot descriptions often lacked thematic depth for accurate embedding; more detailed description would lead to a better results on the KNN Embedded model.
     \item \textbf{VAE Limitations}: Failed to learn meaningful latent representations from sparse features
     \item \textbf{Cold Start}: New movies without sufficient metadata remain challenging
 \end{itemize}
@@ -211,8 +227,7 @@ The current implementation has several constraints:
 \begin{itemize}
     \item Static dataset (Netflix catalog as of 2021)
     \item No personalization beyond initial seed movies
-    \item Limited handling of genre crossover in recommendations
-    \item Poor movies descriptions
+    \item Poor movie descriptions
 \end{itemize}
 
 
@@ -224,7 +239,8 @@ The developed recommendation system successfully addresses the core requirement 
     \item Implement ensemble approach combining multiple models
     \item Incorporate lightweight user feedback mechanism
     \item Develop genre-aware similarity adjustments
-    \item Expand with TV show-specific recommendation logic
+    \item Incorporate external APIs for richer metadata
+    \item Implement user feedback mechanism to improve recommendations
 \end{itemize}
 
 The project demonstrates that content-based filtering with modern NLP techniques provides effective recommendations while meeting strict performance constraints required for web deployment. The MLOps approach ensured smooth integration between machine learning components and production web environment.
