@@ -3,28 +3,43 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>How can I suggest you today?</title>
+    <title>Recommendo</title>
+    <link rel="icon" type="image/x-icon" href="/app/chak.png">
     <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-    <!-- Bottone in alto a destra -->
+    <div class="algo-choice-bar">
+        <label for="algorithm">Choose a method:</label>
+        <select id="algorithm" name="algorithm">
+            <option value="MLOVIE">MLOVIE</option>
+            <option value="KNN">KNN</option>
+        </select>
+    </div>
     <div class="toggle-switch" id="toggleSwitch">
-        <div class="icon">☀️</div>
+        <span class="icon">☀️</span>
     </div>
 
     <div class="container">
         <!-- Area sinistra -->
         <div class="left-panel">
-            <h2>How can I suggest you today?</h2>
-            <p>Insert 5 or more movies:</p>
+            <img id="logo-img" src="Recommendo_lighttheme-removebg-preview.png" alt="Logo" />
+            <h3>Insert 1 or more movies:</h3>
             <form id="movieForm" autocomplete="off">
                 <div class="input-wrapper">
-                    <input type="text" id="movieInput" placeholder=" " required />
+                    <input type="text" id="movieInput" placeholder=" " />
                     <label for="movieInput" class="floating-label">Enter movie names</label>
                 </div>
-                <button type="submit">Suggest</button>
+                <button type="submit" class="arrow-btn" title="Suggest">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
                 <ul id="suggestions" class="suggestions-list"></ul>
             </form>
+            <div id="minAlert" class="min-alert" style="display:none;">
+                Please add a movie (max 10): 
+            </div>
         </div>
 
             <!-- Area destra -->

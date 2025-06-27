@@ -23,7 +23,7 @@ class ModelRecommendation:
         if model_type == "KNN":
             model = KNN()
             # Check if exist the csv file matrix_weighted.npz
-            if not os.path.exists("matrix_weighted.npz"):
+            if not os.path.exists("./data/matrix_weighted.npz"):
                 model.save(df)
         elif model_type == "MLOVIE":
             model = MLOVIE()
