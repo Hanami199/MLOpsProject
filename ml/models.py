@@ -17,11 +17,13 @@ class KNN:
         self.X = X
         self.n, self.d = X.shape
 
-    def predict(self, X):
-        n_movies = len(X)
-        idxs, distances = np.zeros((n_movies, self.res)), np.zeros((n_movies, self.res))
+
+    def predict(self, IDX: list) -> np.ndarray:
+        """Returns top-k similar movie indices"""
+        n_movies = len(IDX)
+        idxs, distances = np.zeros((n_movies, self.res), dtype='int32'), np.zeros((n_movies, self.res))
         
-        for i, x in enumerate(X):
+        for i, x in enumerate(IDX):
             idxs[i] , distances[i] = self._predict(x)
         
         distances, idxs = distances.flatten(), idxs.flatten()
@@ -29,10 +31,11 @@ class KNN:
         idx_sort = np.argsort(distances)                                       # compute where the score is higher
         idxs_sorted = idxs[idx_sort]                                           # movie indexes with the higher score overall
 
-        filter = ~np.isin(idxs_sorted, X)                                      # remove searched indexes
+        filter = ~np.isin(idxs_sorted, IDX)                                    # remove searched indexes
         _, unique_idx = np.unique(idxs_sorted[filter], return_index=True)      # get where there is the first new number
 
         return idxs_sorted[filter][np.sort(unique_idx)][:self.k]               # return the first k movie index           
+
 
     def save(self, df):
         ds = DataScaler(df)
@@ -46,9 +49,11 @@ class KNN:
         X = ds.generate_X()
         np.savez_compressed(self.mw_path, my_matrix = X)
 
+
     def load(self):
         self.X = np.load(self.mw_path, allow_pickle=True)['my_matrix']
         self.n, self.d = self.X.shape
+
 
     def _predict(self, idx):
         x = self.X[idx]
@@ -56,6 +61,8 @@ class KNN:
         distances = np.sqrt(np.sum( difference*difference, axis=1))/self.n
         idx = np.argsort(distances)[1:self.res + 1]
         return idx, distances[idx]
+
+
 
 
 class MLOVIE:
@@ -93,31 +100,19 @@ class MLOVIE:
                 self.type[column]       = 'str'
 
             self.w[column] = w
-
-
-    def _predict(self, x):
-        """x is the index of a movie"""
-        assert self.col_names is not None, "model not fitted yet"
-        scores = np.zeros((self.n, self.d))
-        
-        for i, name in enumerate(self.col_names):
-            if self.type[name] == 'str':
-                z = self.embeddings[name][x]  #z = self.model.encode(x[name])
-                scores[:, i] = (self.CosineSimilarity(z, self.embeddings[name]))*self.w[name]
-            else:
-                z = self.numeric[name][x]
-                scores[:, i] = self.NumericScore(self.numeric[name], z)*self.w[name]
                 
         scores = np.sum(scores, axis=1)
         idx = np.argsort(-scores)[1:self.res+1]
         return idx, scores[idx] 
     
     
-    def predict(self, X):
-        n_movies = len(X)
-        idxs, scores = np.zeros((n_movies, self.res)), np.zeros((n_movies, self.res))
+    def predict(self, IDX: list) -> np.ndarray:
+        """Returns top-k similar movie indices"""
+
+        n_movies = len(IDX)
+        idxs, scores = np.zeros((n_movies, self.res), dtype='int32'), np.zeros((n_movies, self.res))
         
-        for i, x in enumerate(X):
+        for i, x in enumerate(IDX):
             idxs[i] , scores[i] = self._predict(x)
         
         scores, idxs = scores.flatten(), idxs.flatten()
@@ -125,7 +120,7 @@ class MLOVIE:
         idx_sort = np.argsort(-scores)                                         # compute where the score is higher
         idxs_sorted = idxs[idx_sort]                                           # movie indexes with the higher score overall
 
-        filter = ~np.isin(idxs_sorted, X)                                      # remove searched indexes
+        filter = ~np.isin(idxs_sorted, IDX)                                      # remove searched indexes
         _, unique_idx = np.unique(idxs_sorted[filter], return_index=True)      # get where there is the first new number
 
         return idxs_sorted[filter][np.sort(unique_idx)][:self.k]               # return the first k movie index
@@ -161,6 +156,19 @@ class MLOVIE:
             info = json.load(file)
             self.col_names, (self.n, self.d) = info
 
+
+    def _predict(self, x):
+        """x is the index of a movie"""
+        assert self.col_names is not None, "model not fitted yet"
+        scores = np.zeros((self.n, self.d))
+        
+        for i, name in enumerate(self.col_names):
+            if self.type[name] == 'str':
+                z = self.embeddings[name][x]  #z = self.model.encode(x[name])
+                scores[:, i] = (self.CosineSimilarity(z, self.embeddings[name]))*self.w[name]
+            else:
+                z = self.numeric[name][x]
+                scores[:, i] = self.NumericScore(self.numeric[name], z)*self.w[name]
 
     def NumericScore(self, x, X):
         dif = x - X

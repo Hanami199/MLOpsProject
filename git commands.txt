@@ -2,10 +2,11 @@
 # git fetch origin                             # connette al branch principale
 # git rebase main                              # connette con il main
 
+git pull origin main                           # Scarica e unisci le modifiche
+
 # git add .
 # git commit -m "changes" 
 # git push                                     # update sul branch
 # git push -u origin dev-data                  # richiesta merge con il main
-
 
 

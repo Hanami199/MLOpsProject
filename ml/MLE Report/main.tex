@@ -3,36 +3,230 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{geometry}
-\geometry{margin=1in}
+\geometry{margin=0.5in}
+\usepackage{amsmath}
+\usepackage[table]{xcolor} % for color and colored shapes
+\usepackage{amssymb}       % for symbols (optional)
+\usepackage{fontspec} % Needed for emoji with XeLaTeX or LuaLaTeX
+\usepackage{float}
 
-\title{Project Title: ML Engineer}
+
+\setlength{\parindent}{0pt} % Disable paragraph indentation
+\newfontfamily\emojifont{Segoe UI Emoji}[Renderer=Harfbuzz]
+
+%\newfontfamily\emojifont[Path=fonts/]{NotoColorEmoji-Regular.ttf}
+
+
+\title{\textbf{Recommendo} ML Engineer}
 \author{Your Name}
 \date{\today}
 
 \begin{document}
 
+\twocolumn
 \maketitle
 
+
+
+\section*{ABSTRACT}
+
+In this report, we present \textbf{Recommendo}, a machine learning-based web page for personalized movie recommendations. The site allows users to select 5 films they already enjoy and, through data-driven techniques, a recommendation engine computes movie similarities and generates personalized suggestions.
+
 \section*{Introduction \& Problem Statement}
-% Describe the ML-relevant aspects of the problem.
-% Highlight why ML is suitable for solving this issue.
+In a period in which a user has to choose between tens of different digital streaming platforms, they are overwhelmed by the sheer volume of available films and series. This has led to a sort of paradox of choice, in which these abundance of possibilities brought onto users decision fatigue. 
 
+Another keypoint is that, while there are tradition recommendation systems embedded directly into these services, they are not always transparent or personalized, particularly when users’ history is not present.
+
+Our proposal, Recommendo, has been built with these challenges in mid: we allow users to select up to 10 (at least one) films they already like and then return tailored recommendations based on those choices. The core of our project is a data-drive, machine learning-powered recommendation pipeline.
+My role as a machine learning engineer included think and program models, test their performances and work closer to the data engineer to make models more effective as they can.
+
+
+
+
+
+% _______________________________________
 \section*{Background}
-% Describe the chosen ML task type (classification, regression, etc.)
-% Include a brief on ML theory relevant to your model.
+The development of our project required several things: we need to find coordination between modern web development practices, software design methodologies and data-driven machine learning components. 
 
-\section*{Methodology}
-% Detail model selection process and justification.
-% Describe training pipeline, feature selection, evaluation metrics.
-% Include pseudocode or pipeline diagrams if useful.
+At the beginning of the project, we decided to adopt an Agile software development methodology: we broke down our work into weekly milestones and iterative improvements.
+Task tracking, collaboration and version control were managed using Github projects, which was used to structure the issues and pull request, milestones and so on.
+Each team member worked within their dedicated branch (e.g., dev-architecture for the SE, dev-ml for the MLE, dev-app for the SD and dev-data for the DE) and merged into the main branch only through reviewed pull request, reviewed by the software engineer.
 
+Initialilly, we considered Streamlit for the frontend part, given its easy integration with Python-based ML models, which were the one we decided to work with. However, early in the development, the software developer brought up during a meeting that he felt it was too limited for the task at hand, and that he could do better if we transitioned to a more flexible stack: the backend was build using Flask, to make the integration with python smoother while the frontend was built using HTML, CSS and JavaScript.
+
+As the ML Engineer, I had to choose models that could work with minimal user input (1–10 film titles), offer low-latency responses, and integrate smoothly into a web-based pipeline. The models considered and/or developed were:
+\begin{itemize}
+  \item k-NN on One-Hot Encoded features
+  \item k-NN on Embedding-based features (SBERT)
+  \item VAE (Variational Autoencoder) on Sentence Embeddings – later discarded due to poor performance
+\end{itemize}
+
+The dataset used was a public Netflix dataset from Kaggle. It contains key metadata such as title, cast, genre, description, and rating. Preprocessing was a critical step to ensure data was in a form suitable for both classic ML and embedding-based models.
+
+The dataset management and preprocessing were handled by the data engineer, while their integration into the backend required coordination with the software developer. The dataset we decided to use was a dataset containing Netflix’s Movies and TV-series, found on Kaggle.
+
+
+
+
+
+
+
+% _______________________________________
+\section*{Methodology/Approach}
+
+\subsection*{Machine Learning Pipeline} 
+The recommendation system was developed through a structured pipeline:
+\begin{enumerate}
+    \item \textbf{Data Preprocessing}: \\
+    Collaborated with the Data Engineer to handle heterogeneous features:
+    \begin{itemize}
+        \item Categorical variables (\verb|director, country, cast|) one-hot encoded
+	\item The one-hot encoded high-cardinality features \\ (\verb|cast|) filtered to actors appearing in $\ge 5$ productions
+        \item Text features (\verb|description, listed\_in, cast,| \verb|title|) processed with Sentence-BERT embeddings
+        \item \verb|duration| converted to numerical format 
+	\item Normalized numerical variables \verb|release_year, rating|
+	\item Dropped non intersting variables (\verb|index|, \\ \verb|date_added|) 
+	\item Dropped observation with missing values on variables different from \verb|director|, \verb|cast|, \verb|country|
+    \end{itemize}
+    
+
+    \item \textbf{Feature Engineering}: \\
+    Created two distinct feature spaces:
+    \begin{itemize}
+        \item \textit{Sparse Representation}: Traditional one-hot encoding of metadata
+        \item \textit{Dense Representation}: SBERT embeddings \\ (\verb|all-MiniLM-L6-v2|) of textual descriptions
+    \end{itemize}
+    Assert meaningful vector representation on embedded features using \verb|t-SNE| and \verb|UMAP| 
+
+    \item \textbf{Model Development}: \\
+    Implemented and evaluated three approaches:
+    \begin{itemize}
+        \item \textit{KNN (One-Hot)}: Traditional k-Nearest Neighbors using mean squared error on sparse features
+        \item \textit{KNN (Embedded)}: Cosine similarity in SBERT embedding space
+        \item \textit{VAE}: Variational Autoencoder for latent space learning (abandoned due to poor cluster separation on the latent space)
+    \end{itemize}
+
+     On KNN model an hyperparameter for weight the relevance of features has been added, which enhance model performance by given less importance to feature like \verb|Title| and more others like the movie genre.
+    
+    \item \textbf{Model Integration}: \\
+     Designed unified load and prediction interface:
+    \begin{verbatim}
+    def load():
+        """load necessary data"""
+    \end{verbatim}
+
+    \begin{verbatim}
+    def predict(IDX: list, k=5) -> np.ndarray:
+        """Returns top-k similar 
+            movie indices"""
+    \end{verbatim}
+
+    Designed similar \verb|fit()| interface to compute the embedding and to store the data
+    
+    Collabarated with the Data Engineer to fine tune the hyperparameters.
+    
+\end{enumerate}
+
+
+\subsection*{MLOps Implementation}
+The machine learning lifecycle followed MLOps principles:
+\begin{itemize}
+    \item \textbf{Version Control}: Models, datasets, and preprocessing pipelines versioned in GitHub
+    \item \textbf{Reproducibility}: Frozen dependencies via requirements.txt and model serialization
+    \item \textbf{Testing}: Unit tests for embedding consistency and prediction stability
+    \item \textbf{Monitoring}: Latency tracking during development (sub-second response achieved)
+\end{itemize}
+
+
+\subsection*{Performance Evaluation}
+    Models were evaluated on four critical dimensions:
+    \begin{table}[H]
+    \centering
+        \begin{tabular}{|l|c|c|}
+            \hline
+            \textbf{Metric}      & \raisebox{-0.3ex}{\emojifont 🟦} &   \raisebox{-0.3ex}{\emojifont 🟩}  \\
+            \hline
+            \hline
+            Inference Speed      & $\sim 4 \ s$              & $< 1 \ s$              \\
+            \hline
+            Memory Footprint     & $> 500 \ MB$          & $\sim 60 \ MB$           \\
+            \hline
+            Cluster Coherence†   & low              & high               \\
+            \hline
+            Human Evaluation†    & medium           & high               \\
+            \hline
+            \hline
+        \end{tabular}
+        \caption{\footnotesize{ 
+            {\emojifont 🟦}  KNN (One-Hot) 
+            {\emojifont 🟩}  KNN (Embedded)  \\
+            †User-rated relevance (4 test users)} 
+        }
+    \end{table}
+
+
+
+
+% _______________________________________
 \section*{Results}
-% Show training results, evaluation metrics, and comparisons.
-% Include tables, confusion matrix, charts.
+The KNN (Embedded) model demonstrated superior performance across all evaluation metrics:
+\begin{itemize}
+    \item Achieved way faster inference compared to one-hot approach, that has to face high dimensional spaces, and enable usage of the \verb|description| and \verb|Title|  variables 
+    \item Produced more semantically coherent recommendations (validated via \verb|t-SNE| and \verb|UMAP| visualizations)
+    \item Enabled real-time suggestions ($<500 \ ms$ response time)
+    \item Successfully integrated with backend through standardized interface
+\end{itemize}
 
-\section*{MLOps Considerations}
-% Discuss model deployment, versioning, and integration.
-% Mention risks: data drift, overfitting, model reproducibility.
+Key outcomes:
+\begin{itemize}
+    \item \textit{Model-Agnostic API}: \\
+    Designed polymorphic interface enabling runtime model switching \\
+    $\rightarrow$ \textit{Implementation}: Standardized \texttt{predict()} method across models \\
+    $\rightarrow$ \textit{Benefit}: Frontend can toggle between KNN/Embedded models via dropdown
+
+    \item Reduced feature dimensionality from 12,000+ (one-hot) to 384 (SBERT embeddings)
+\end{itemize}
+
+    
+
+  
+
+
+% _______________________________________
+\section*{Discussion \& Conclusion}
+
+\subsection*{Technical Challenges}
+Several challenges emerged during development:
+\begin{itemize}
+    \item \textbf{Heterogeneous Data}: TV shows and movies required different duration handling
+    \item \textbf{Semantic Gaps}: Plot descriptions often lacked thematic depth for accurate embedding
+    \item \textbf{VAE Limitations}: Failed to learn meaningful latent representations from sparse features
+    \item \textbf{Cold Start}: New movies without sufficient metadata remain challenging
+\end{itemize}
+
+
+\subsection*{System Limitations}
+The current implementation has several constraints:
+\begin{itemize}
+    \item Static dataset (Netflix catalog as of 2021)
+    \item No personalization beyond initial seed movies
+    \item Limited handling of genre crossover in recommendations
+    \item Poor movies descriptions
+\end{itemize}
+
+
+\subsection*{Conclusion}
+The developed recommendation system successfully addresses the core requirement of generating personalized movie suggestions from minimal user input. The KNN approach using sentence embeddings proved optimal, balancing performance with recommendation quality. The modular design allows seamless incorporation of future improvements.
+
+\subsection*{Future Enhancements}
+\begin{itemize}
+    \item Implement ensemble approach combining multiple models
+    \item Incorporate lightweight user feedback mechanism
+    \item Develop genre-aware similarity adjustments
+    \item Expand with TV show-specific recommendation logic
+\end{itemize}
+
+The project demonstrates that content-based filtering with modern NLP techniques provides effective recommendations while meeting strict performance constraints required for web deployment. The MLOps approach ensured smooth integration between machine learning components and production web environment.
 
 \end{document}
 
