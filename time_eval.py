@@ -5,9 +5,17 @@ import numpy as np
 import tqdm
 import time
 import sys
+import matplotlib.pyplot as plt
 
 
 pd.set_option('display.max_columns', 10) 
+plt.style.use('ggplot')
+plt.rcParams['axes.facecolor'] = '#FEFEFE'
+plt.rcParams['grid.linewidth'] = 0.5
+plt.rcParams['grid.color'] = '#000000'
+plt.rcParams['grid.alpha'] = 0.05
+
+
 
 
 
@@ -33,11 +41,27 @@ if __name__ == '__main__':
     #print(df.head())
     #print(list(df.columns))
 
-    selected =   ['type', 'title', 'director', 'cast', 'country', 'release_year', 'rating', 'listed_in', 'description']
-    w = np.array([    .3,     0.2,        0.5,    0.5,       0.2,            0.5,        2,           4,            3])
+    # selected =   ['type', 'title', 'director', 'cast', 'country', 'release_year', 'rating', 'listed_in', 'description']
+    # w = np.array([    .3,     0.2,        0.5,    0.5,       0.2,            0.5,        2,           4,            3])
 
 
+    n_idx = 16
+    results = np.zeros((2, n_idx))
+    x = np.arange(n_idx) + 1
 
-    for model, m_name in zip([MLOVIE(), KNN()], ["MLOVIE", "KNN"]):
+    for i, (model, m_name) in enumerate(zip([MLOVIE(), KNN()], ["MLOVIE", "KNN"])):
         model.load()
-        print(f"average time {m_name}: \t{eval(df, model, n = 20)} \t s")
+        for j in tqdm.tqdm(range(n_idx)):
+            results[i, j] = eval(df, model, n = 20, n_in = j+1)
+    
+    fig, ax = plt.subplots(figsize=(16, 7))
+    ax.set_title("Average time inference KNN vs MLOVIE")
+    ax.plot(x, results[1], label = 'KNN', color = '#FBE735', linewidth=2)
+    ax.plot(x, results[0], label = 'MLOVIE', color = '#440154', linewidth=2)
+    ax.legend()
+    ax.set_xlabel('number of movie indexes')
+    ax.set_ylabel('time (s)')
+    plt.show()
+
+    print(f"average time MLOVIE: \t{results[0]} \t s")
+    print(f"average time KNN:    \t{results[1]} \t s")
