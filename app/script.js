@@ -278,9 +278,9 @@ async function submitMovies() {
     });
 
     const result = await response.json();
-    sessionStorage.setItem('recommendedMovies', JSON.stringify(result.titles));
-    sessionStorage.setItem('recommendedTypes', JSON.stringify(result.types));
-    sessionStorage.setItem('selectedAlgorithm', selectedAlgo);
+sessionStorage.setItem('recommendedMovies', JSON.stringify(result.titles));
+sessionStorage.setItem('recommendedDetails', JSON.stringify(result.details));
+sessionStorage.setItem('selectedAlgorithm', selectedAlgo);
 
     window.location.href = "results.html";
 }
