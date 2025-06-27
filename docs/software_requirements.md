@@ -96,7 +96,7 @@ For users, we assume:
 ### 3.1 Functional Requirements
 
 There are several **core functional requirements**:
-1. The system shall allow users to select 5 to 10 movies from a predefined list
+1. The system shall allow users to select 1 to 10 movies from a predefined list
 2. The system shall generate and return at least 5 movie recommendations based on previous selections
 3. The system sgall display the recommended movies providing the titles and possibly also the gerne, average rating, and a poster image
 4. The system shall allow users to change their selection and re-run the recommendation
