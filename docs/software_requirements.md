@@ -1,6 +1,8 @@
 # Software Requirements Specification
 Version 1.0 -- 2.06.2025
 
+Version 2.0 -- 27.06.2025 - Final Version
+
 ## 1. Introduction
 ### 1.1 Purpose
 
@@ -50,14 +52,14 @@ This document is meant to be useful for:
 ### 2.1 Product Perspective
 This webapp is designed to be a standalone project, with a sufficiently simple client-server architecture.
 
-We expect the frontend to be built using **Streamlit**, and to allow users to interact with the webapp by selecting movies.
+We expect the frontend to be built using HTML, CSS and JavaScript, and to allow users to interact with the webapp by selecting movies.
 
-The backend will then process this selections using a pre-trained, or an online learning, machine learning model (to be defined), that returns movie reccomendations based on the similarity to the users' choices.
+The backend (implemented with Flask) will then process this selections using a pre-trained, or an online learning, machine learning models (KNN and RAG), that returns movie reccomendations based on the similarity to the users' choices.
 
 
 ### 2.2 Product Functions
 As far as *how* the product will work for the users go:
-- users will be able to select 5 to 10 movies they enjoy from a premade list (possibly, a search bar)
+- users will be able to select 1 to 10 movies they enjoy from a premade list (possibly, a search bar)
 - the system will then generate a certain number of recommended movies using a ML model
 - the recommended movies will then be displayed, possibly along some metadata (title of course, but also genre, rating...)
 - users will then have the opportunity to refresh and also modify their selection
@@ -94,7 +96,7 @@ For users, we assume:
 ### 3.1 Functional Requirements
 
 There are several **core functional requirements**:
-1. The system shall allow users to select 5 to 10 movies from a predefined list
+1. The system shall allow users to select 1 to 10 movies from a predefined list
 2. The system shall generate and return at least 5 movie recommendations based on previous selections
 3. The system sgall display the recommended movies providing the titles and possibly also the gerne, average rating, and a poster image
 4. The system shall allow users to change their selection and re-run the recommendation
@@ -147,7 +149,7 @@ There are several quality attributes we expect the software to have:
 
 ## 4. Supporting Information
 ### 4.1 Appendices
-As far as the preliminary decisions go, no APIs will be needed.
+Differently than what we decided early on, we decide to use the IMDB API in order to obtain images for the movies and TV-series that are shown in the search bar and that are suggested after the selection.
 
 ### 4.2 Index
 
