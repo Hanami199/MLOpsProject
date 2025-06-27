@@ -45,7 +45,7 @@ if __name__ == '__main__':
     # w = np.array([    .3,     0.2,        0.5,    0.5,       0.2,            0.5,        2,           4,            3])
 
 
-    n_idx = 16
+    n_idx = 20
     results = np.zeros((2, n_idx))
     x = np.arange(n_idx) + 1
 
@@ -54,10 +54,10 @@ if __name__ == '__main__':
         for j in tqdm.tqdm(range(n_idx)):
             results[i, j] = eval(df, model, n = 20, n_in = j+1)
     
-    fig, ax = plt.subplots(figsize=(16, 7))
+    fig, ax = plt.subplots(figsize=(9, 5))
     ax.set_title("Average time inference KNN vs MLOVIE")
-    ax.plot(x, results[1], label = 'KNN', color = '#FBE735', linewidth=2)
-    ax.plot(x, results[0], label = 'MLOVIE', color = '#440154', linewidth=2)
+    ax.plot(x, results[1], label = 'KNN', color = '#FBE735', linewidth=3)
+    ax.plot(x, results[0], label = 'MLOVIE', color = '#440154', linewidth=3)
     ax.legend()
     ax.set_xlabel('number of movie indexes')
     ax.set_ylabel('time (s)')
