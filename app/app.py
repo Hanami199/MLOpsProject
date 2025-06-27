@@ -38,27 +38,29 @@ def recommend():
     movies = data.get('movies', [])
     rec = ModelRecommendation(model_type=algorithm, film_list_titles=movies)
     titles = rec.get_title()
-    # Recupera dettagli per ogni titolo
-    details = []
+    ratings = rec.get_rating() if hasattr(rec, 'get_rating') else ["-"] * len(titles)
+    release_years = rec.get_year() if hasattr(rec, 'get_year') else ["-"] * len(titles)
+    durations = rec.get_duration() if hasattr(rec, 'get_duration') else ["-"] * len(titles)
+    listed_ins = rec.get_listed_in() if hasattr(rec, 'get_listed_in') else ["-"] * len(titles)
+
+    # Ottieni il type dal DataFrame, come per la barra di ricerca
+    types = []
     for t in titles:
         row = df[df['title'] == t]
-        if not row.empty:
-            r = row.iloc[0]
-            details.append({
-                "type": r['type'].strip().lower() if pd.notna(r['type']) else "-",
-                "rating": r['rating'] if pd.notna(r['rating']) else "-",
-                "release_year": str(r['release_year']) if pd.notna(r['release_year']) else "-",
-                "duration": r['duration'] if pd.notna(r['duration']) else "-",
-                "listed_in": r['listed_in'] if pd.notna(r['listed_in']) else "-"
-            })
+        if not row.empty and pd.notna(row.iloc[0]['type']):
+            types.append(row.iloc[0]['type'])
         else:
-            details.append({
-                "type": "-",
-                "rating": "-",
-                "release_year": "-",
-                "duration": "-",
-                "listed_in": "-"
-            })
+            types.append("-")
+
+    details = []
+    for i in range(len(titles)):
+        details.append({
+            "type": types[i] if pd.notna(types[i]) else "-",
+            "rating": ratings[i] if pd.notna(ratings[i]) else "-",
+            "release_year": str(release_years[i]) if pd.notna(release_years[i]) else "-",
+            "duration": durations[i] if pd.notna(durations[i]) else "-",
+            "listed_in": listed_ins[i] if pd.notna(listed_ins[i]) else "-"
+        })
     return jsonify({'titles': titles, 'details': details})
 
 if __name__ == '__main__':
