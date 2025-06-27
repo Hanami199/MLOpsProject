@@ -1,5 +1,8 @@
 # git checkout dev-ml                          # sposta sul branch
 # git fetch origin                             # connette al branch principale
+# git pull                                     # mette il file in locale
+# git fetch origin                             # mette il file in locale
+
 # git rebase main                              # connette con il main
 
 git pull origin main                           # Scarica e unisci le modifiche
@@ -8,5 +11,7 @@ git pull origin main                           # Scarica e unisci le modifiche
 # git commit -m "changes" 
 # git push                                     # update sul branch
 # git push -u origin dev-data                  # richiesta merge con il main
+<<<<<<< HEAD
+=======
 
-
+>>>>>>> 938e2eb (git_commands.txt)

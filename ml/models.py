@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from tqdm.notebook import tqdm
+# from tqdm.notebook import tqdm
+import tqdm
 import os
 import json
 from data.utility_tools import DataScaler
@@ -21,6 +22,8 @@ class KNN:
     def predict(self, IDX: list) -> np.ndarray:
         """Returns top-k similar movie indices"""
         n_movies = len(IDX)
+        self.res = self.k//2 + 1 if n_movies >=2 else self.res
+        
         idxs, distances = np.zeros((n_movies, self.res), dtype='int32'), np.zeros((n_movies, self.res))
         
         for i, x in enumerate(IDX):
@@ -86,12 +89,12 @@ class MLOVIE:
         assert self.model is not None, "model is None"
 
         self.n, self.d = df.shape
-        n = col_names.shape[0]
+        n = np.array(col_names).shape[0]
 
         w = np.ones(n)/n if w is None else w/np.sum(w)
         self.col_names = col_names
 
-        for column, w in tqdm(zip(col_names, w), total=len(col_names)):
+        for column, w in tqdm.tqdm(zip(col_names, w), total=len(col_names)):
             if pd.api.types.is_numeric_dtype(df[column]):
                 self.numeric[column] = df[column].to_numpy()
                 self.type[column]    = 'numeric'
@@ -100,16 +103,15 @@ class MLOVIE:
                 self.type[column]       = 'str'
 
             self.w[column] = w
-                
-        scores = np.sum(scores, axis=1)
-        idx = np.argsort(-scores)[1:self.res+1]
-        return idx, scores[idx] 
+
     
     
     def predict(self, IDX: list) -> np.ndarray:
         """Returns top-k similar movie indices"""
 
         n_movies = len(IDX)
+        self.res = self.k//2 + 1 if n_movies >=2 else self.res
+
         idxs, scores = np.zeros((n_movies, self.res), dtype='int32'), np.zeros((n_movies, self.res))
         
         for i, x in enumerate(IDX):
@@ -120,7 +122,7 @@ class MLOVIE:
         idx_sort = np.argsort(-scores)                                         # compute where the score is higher
         idxs_sorted = idxs[idx_sort]                                           # movie indexes with the higher score overall
 
-        filter = ~np.isin(idxs_sorted, IDX)                                      # remove searched indexes
+        filter = ~np.isin(idxs_sorted, IDX)                                    # remove searched indexes
         _, unique_idx = np.unique(idxs_sorted[filter], return_index=True)      # get where there is the first new number
 
         return idxs_sorted[filter][np.sort(unique_idx)][:self.k]               # return the first k movie index
@@ -169,6 +171,11 @@ class MLOVIE:
             else:
                 z = self.numeric[name][x]
                 scores[:, i] = self.NumericScore(self.numeric[name], z)*self.w[name]
+                
+        scores = np.sum(scores, axis=1)
+        idx = np.argsort(-scores)[1:self.res+1]
+        return idx, scores[idx] 
+    
 
     def NumericScore(self, x, X):
         dif = x - X
