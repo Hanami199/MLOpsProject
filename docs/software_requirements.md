@@ -1,5 +1,6 @@
 # Software Requirements Specification
 Version 1.0 -- 2.06.2025
+
 Version 2.0 -- 27.06.2025 - Final Version
 
 ## 1. Introduction
