@@ -11,4 +11,3 @@ git pull origin main                           # Scarica e unisci le modifiche
 # git commit -m "changes" 
 # git push                                     # update sul branch
 # git push -u origin dev-data                  # richiesta merge con il main
-
